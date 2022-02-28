@@ -47,7 +47,7 @@ int GPU_API::init(const char** file_names, size_t file_count, const char* func_n
 		error = "Couldn't create context";
 		return 1;
 	}
-	queue = clCreateCommandQueue(context, dev_id, 0, &ret);
+	queue = clCreateCommandQueueWithProperties(context, dev_id, NULL, &ret);
 	if (ret != 0) {
 		error = "Couldn't create command queue";
 		return 1;

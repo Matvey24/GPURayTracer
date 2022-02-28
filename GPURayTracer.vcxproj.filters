@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Исходные файлы">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Исходные файлы\rendering">
+      <UniqueIdentifier>{37fa4c8b-fb12-422f-affb-13c4dfc9a8af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\rendering">
+      <UniqueIdentifier>{df037666-29de-4a9a-98ee-a0ead8690316}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\objects">
+      <UniqueIdentifier>{f6062b05-e1c4-46b3-8505-83af63a9f6ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\objects\math">
+      <UniqueIdentifier>{60adce65-5bba-4af1-9ded-7ced8a4edd70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\objects">
+      <UniqueIdentifier>{7fd19fe2-c2c2-42d6-9487-d8cbe428d4d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\objects\math">
+      <UniqueIdentifier>{51c75e6b-9a0b-458e-b1a6-4bbef32d1dc9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GPURayTracer.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="rendering\GPU_API.cpp">
+      <Filter>Исходные файлы\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="rendering\ImageBMP.cpp">
+      <Filter>Исходные файлы\rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="objects\Dot.cpp">
+      <Filter>Исходные файлы\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="objects\math\Matrix.cpp">
+      <Filter>Исходные файлы\objects\math</Filter>
+    </ClCompile>
+    <ClCompile Include="objects\math\Vector2.cpp">
+      <Filter>Исходные файлы\objects\math</Filter>
+    </ClCompile>
+    <ClCompile Include="objects\math\Vector3.cpp">
+      <Filter>Исходные файлы\objects\math</Filter>
+    </ClCompile>
+    <ClCompile Include="objects\Sphere.cpp">
+      <Filter>Исходные файлы\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="rendering\GPU_API.h">
+      <Filter>Файлы заголовков\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="rendering\ImageBMP.h">
+      <Filter>Файлы заголовков\rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="objects\math\Matrix.h">
+      <Filter>Файлы заголовков\objects\math</Filter>
+    </ClInclude>
+    <ClInclude Include="objects\math\Vector2.h">
+      <Filter>Файлы заголовков\objects\math</Filter>
+    </ClInclude>
+    <ClInclude Include="objects\math\Vector3.h">
+      <Filter>Файлы заголовков\objects\math</Filter>
+    </ClInclude>
+    <ClInclude Include="objects\Writable.h">
+      <Filter>Файлы заголовков\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="objects\Dot.h">
+      <Filter>Файлы заголовков\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="objects\Sphere.h">
+      <Filter>Файлы заголовков\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="objects\Types.h">
+      <Filter>Файлы заголовков\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="objects\Objects.h">
+      <Filter>Файлы заголовков\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

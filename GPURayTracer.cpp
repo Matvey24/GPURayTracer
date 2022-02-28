@@ -8,8 +8,9 @@ int initGPU(GPU_API& api) {
         "cl/ImageBMP.cl",
         "cl/intersections.cl",
         "cl/figures.cl",
-        "cl/simple.cl" };
-    int ret = api.init(names, sizeof(names) / sizeof(char*), "main");
+        "cl/simple.cl" 
+    };
+    int ret = api.init(names, sizeof(names) / sizeof(char*), "worker_main");
     t = clock() - t;
     std::cout << "GPU initialisation finished in " << t << " millis\n\n";
     if (ret != 0) {

@@ -1,14 +1,14 @@
 
 struct SurfacePoint intersect(double3 pos, double3 dir, __global char* scene){
-	long count = *(long*)scene;
+	long count = *(__global long*)scene;
 	scene += 8;
 	struct SPoint nearest;
 	nearest.d = INFINITY;
 	for(long i = 0; i < count; ++i){
-		long size = *(long*)scene;
+		long size = *(__global long*)scene;
 		scene += 8;
 		struct SPoint cur;
-		switch(*(long*)scene){
+		switch(*(__global long*)scene){
 		case OBJECT_SPHERE:
 			cur = sphInter(scene, pos, dir);
 			break;
@@ -35,7 +35,7 @@ double3 getColor(double3 pos, double3 dir, __global char* scene) {
 	double scl = d3_scl(dir, sp.norm);
 	return d_module(scl) * sp.diffuse;
 }
-__kernel void main(__global struct SceneParam *param_p, __global char* data, __global char* scene) {
+__kernel void worker_main(__global struct SceneParam *param_p, __global char* data, __global char* scene) {
 	int x = get_global_id(0);
 	int y = get_global_id(1);
 	struct SceneParam param = *param_p;

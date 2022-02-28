@@ -25,17 +25,17 @@ struct SurfacePoint{
 	double3 diffuse;
 };
 double3 getVec(__global char* dat){
-	return (double3)(*(double*)(dat), *(double*)(dat + 8), *(double*)(dat + 16));
+	return (double3)(*(__global double*)(dat), *(__global double*)(dat + 8), *(__global double*)(dat + 16));
 }
 struct SPoint sphInter(__global char* sphere, double3 pos, double3 dir){
 	struct SPoint p;
-	p.d = nasphInter(getVec(sphere + 8), *(double*)(sphere + 16 * 8), pos, dir);
+	p.d = nasphInter(getVec(sphere + 8), *(__global double*)(sphere + 16 * 8), pos, dir);
 	p.dot = sphere;
 	return p;
 }
 
 struct SurfacePoint getPoint(double3 pos, double3 dir, struct SPoint p){
-	long type = *(long*)p.dot;
+	long type = *(__global long*)p.dot;
 	struct SurfacePoint sp;
 	sp.intersects = true;
 	sp.pos = pos + (p.d * dir);

@@ -7,6 +7,7 @@ public:
 	unsigned long type;
 	Vector3 pos;
 	Vector3 color;
+	double reflect;
 	Matrix rot;
 	Dot(unsigned long type);
 	size_t sizeOf() const;

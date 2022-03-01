@@ -1,7 +1,7 @@
 #include "Dot.h"
-Dot::Dot(unsigned long type):type(type){}
+Dot::Dot(unsigned long type):type(type), reflect(0){}
 size_t Dot::sizeOf() const {
-	return sizeof(double) * (1 + 3 + 3 + 9);
+	return sizeof(double) * (1 + 3 + 3 + 1 + 9);
 }
 void Dot::write(void* to) {
 	double* dp = (double*)to;
@@ -13,6 +13,7 @@ void Dot::write(void* to) {
 	dp[++i] = color.x;
 	dp[++i] = color.y;
 	dp[++i] = color.z;
+	dp[++i] = reflect;
 	dp[++i] = rot.a1;
 	dp[++i] = rot.a2;
 	dp[++i] = rot.a3;

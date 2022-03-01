@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="objects\Dot.h" />
+    <ClInclude Include="objects\Material.h" />
     <ClInclude Include="objects\math\Matrix.h" />
     <ClInclude Include="objects\math\Vector2.h" />
     <ClInclude Include="objects\math\Vector3.h" />

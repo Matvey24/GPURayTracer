@@ -24,6 +24,7 @@ public:
 	cl_command_queue queue;
 	~GPU_API();
 	int init(const char** file_names, size_t file_count, const char* func_name);
+	void print_info();
 	cl_mem createBuffer(cl_mem_flags flags, size_t mem_size, int &ret);
 	int deleteBuffer(cl_mem mem);
 	int writeBuffer(cl_mem vmem, void* cmem, size_t size);

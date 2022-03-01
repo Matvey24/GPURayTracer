@@ -18,6 +18,12 @@ double d3_len2(double3 vec){
 double d3_len(double3 vec){
 	return sqrt(d3_len2(vec));
 }
+double3 d3_vec(double3 a, double3 b){
+    return (double3)(
+        a.y * b.z - a.z * b.y,
+        a.z * b.x - a.x * b.z,
+        a.x * b.y - a.y * b.x);
+}
 double3 Matrix_transform(struct Matrix mat, double3 vec){
 	double x, y, z;
     x = mat.a1 * vec.x + mat.a2 * vec.y + mat.a3 * vec.z;
@@ -60,4 +66,37 @@ struct Matrix Matrix_setRotOf(double3 ang){
     ang.z *= l1;
     double2 an = d2_fromAng(l);
     return Matrix_setRotE(ang, an);
+}
+struct RandomState{
+    unsigned tausx;
+    unsigned tausy;
+    unsigned tausz;
+    unsigned lcgw;    
+};
+unsigned random_lcg(unsigned *state){
+    *state = *state * 1664525 + 1013904223;
+    return *state;
+}
+unsigned random_taus_step(unsigned *state, unsigned S1, unsigned S2, unsigned S3, unsigned M){
+    unsigned b = ((*state << S1) ^ *state) >> S2;
+    *state = ((*state & M) << S3) ^ b;
+    return *state;
+}
+unsigned random_taus(struct RandomState* state){
+    return 
+        random_taus_step(&state->tausx, 13, 19, 12, 294917294) ^
+        random_taus_step(&state->tausy, 2, 25, 4, 294967288) ^
+        random_taus_step(&state->tausz, 3, 11, 17, 294907280) ^
+        random_lcg(&state->lcgw);
+}
+void init_taus(struct RandomState* state, unsigned v){
+    state->lcgw = v;
+    random_lcg(&state->lcgw);
+    state->tausx = random_lcg(&state->lcgw);
+    state->tausy = random_lcg(&state->lcgw);
+    state->tausz = random_lcg(&state->lcgw);
+}
+double random(struct RandomState* state){
+    unsigned rand = random_taus(state);
+    return ((double)rand) / (4294967295);
 }

@@ -10,6 +10,20 @@ double getDist(double t1, double t2){
         return t2;
     return t1;
 }
+double3 reflect(double3 dir, double3 norm){
+    double scl = d3_scl(dir, norm);
+    return dir - (2 * scl) * norm;
+}
+double calcReflect(double3 dir, double3 norm, double ref){
+    ref = 1 - ref;
+    double cosfi = d_module(d3_scl(dir, norm));
+    double sinfi = sqrt(1 - cosfi * cosfi);
+    double sinpsi = ref * sinfi;
+    double cospsi = sqrt(1 - sinpsi * sinpsi);
+    double rpe = (cosfi - ref*cospsi)/(cosfi + ref*cospsi);
+    double rpa = (ref*cosfi - cospsi)/(ref*cosfi +cospsi);
+    return sqrt((rpe * rpe + rpa * rpa) / 2);
+}
 double nasphInter(double3 center, double rad2,
  double3 pos, double3 dir){
 	double3 tmp = center - pos;

@@ -91,6 +91,39 @@ int GPU_API::init(const char** file_names, size_t file_count, const char* func_n
 	}
 	return 0;
 }
+void GPU_API::print_info() {
+	const cl_device_info id[] = {
+		CL_DEVICE_MAX_CLOCK_FREQUENCY,
+		CL_DEVICE_MAX_COMPUTE_UNITS,
+		CL_DEVICE_MAX_WORK_GROUP_SIZE
+	};
+	const char* str[] = {
+		"CLOCK_FREQ",
+		"UNITS",
+		"MAX_WORK_GROOP_SIZE"};
+	for (int i = 0; i < sizeof(id) / sizeof(int); ++i) {
+		size_t val;
+		unsigned int ret;
+		size_t val_len;
+		val = 0;
+		ret = clGetDeviceInfo(dev_id, id[i], sizeof(size_t), &val, &val_len);
+		std::cout << str[i] << ": ";
+		if (ret != 0)
+			std::cout << "Undefined\n";
+		else
+			std::cout << val << "\n";
+	}
+	size_t dims[3];
+	size_t val_len;
+	unsigned ret;
+	ret = clGetDeviceInfo(dev_id, CL_DEVICE_MAX_WORK_ITEM_SIZES, sizeof(dims), dims, &val_len);
+	std::cout << "MAX_WORK_ITEM_SIZES: ";
+	if (ret != 0) {
+		std::cout << "Undefined\n";
+	}else{
+		std::cout << "(" << dims[0] << ", " << dims[1] << ", " << dims[2] << ")\n";
+	}
+}
 cl_mem GPU_API::createBuffer(cl_mem_flags flags, size_t mem_size, int& ret) {
 	return clCreateBuffer(context, flags, mem_size, NULL, &ret);
 }

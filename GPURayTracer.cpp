@@ -26,19 +26,23 @@ void default_scene() {
     GPU_API api;
     if (initGPU(api))
         return;
-    Camera c(1920, 1080, api);
+    api.print_info();
+    std::cout << "\n";
+    Camera c(1280, 720, api);
     Scene scene;
     //
     Sphere sp;
     sp.dot.pos.set(0, 0, 4);
     sp.dot.color.set(1, 0, 0);
     sp.rad2 = 1;
+    sp.dot.reflect = 0.2;
     scene.objs.push_back(&sp);
     //
     Sphere floor;
     floor.dot.pos.set(0, -100, 0);
     floor.dot.color.set(0, 1, 1);
     floor.rad2 = 99. * 99;
+    floor.dot.reflect = 0.2;
     scene.objs.push_back(&floor);
     //
     c.rot.setRotY(Vector2(M_PI / 8));

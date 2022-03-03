@@ -3,5 +3,5 @@
 #define OBJECTS_H_
 
 #include "Sphere.h"
-
+#include "Rect.h"
 #endif

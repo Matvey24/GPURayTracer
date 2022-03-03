@@ -24,11 +24,25 @@ double3 d3_vec(double3 a, double3 b){
         a.z * b.x - a.x * b.z,
         a.x * b.y - a.y * b.x);
 }
+double3 d3_sclv(double3 a, double3 b){
+    return (double3)(
+        a.x * b.x,
+        a.y * b.y,
+        a.z * b.z
+    );
+}
 double3 Matrix_transform(struct Matrix mat, double3 vec){
 	double x, y, z;
     x = mat.a1 * vec.x + mat.a2 * vec.y + mat.a3 * vec.z;
     y = mat.b1 * vec.x + mat.b2 * vec.y + mat.b3 * vec.z;
     z = mat.c1 * vec.x + mat.c2 * vec.y + mat.c3 * vec.z;
+    return (double3)(x, y, z);
+}
+double3 Matrix_transformBack(struct Matrix mat, double3 vec){
+    double x, y, z;
+    x = mat.a1 * vec.x + mat.b1 * vec.y + mat.c1 * vec.z;
+    y = mat.a2 * vec.x + mat.b2 * vec.y + mat.c2 * vec.z;
+    z = mat.a3 * vec.x + mat.b3 * vec.y + mat.c3 * vec.z;
     return (double3)(x, y, z);
 }
 struct Matrix Matrix_mult(struct Matrix a, struct Matrix b){

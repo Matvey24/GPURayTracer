@@ -12,10 +12,10 @@ void Scene::write(void* to) {
 	*d = objs.size();
 	d = &d[1];
 	for (size_t i = 0; i < objs.size(); ++i) {
-		__int64 len = objs[i]->sizeOf();
+		__int64 len = objs[i]->sizeOf() / 8;
 		*d = len;
 		d = &d[1];
 		objs[i]->write(d);
-		d = (__int64*)(((char*)d) + len);
+		d = &d[len];
 	}
 }

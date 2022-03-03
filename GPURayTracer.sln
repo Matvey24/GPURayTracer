@@ -9,6 +9,8 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		NVIDIA|x64 = NVIDIA|x64
+		NVIDIA|x86 = NVIDIA|x86
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
@@ -17,6 +19,10 @@ Global
 		{DDC30A80-32A2-4BDD-9FFE-19AADBF82FE1}.Debug|x64.Build.0 = Debug|x64
 		{DDC30A80-32A2-4BDD-9FFE-19AADBF82FE1}.Debug|x86.ActiveCfg = Debug|Win32
 		{DDC30A80-32A2-4BDD-9FFE-19AADBF82FE1}.Debug|x86.Build.0 = Debug|Win32
+		{DDC30A80-32A2-4BDD-9FFE-19AADBF82FE1}.NVIDIA|x64.ActiveCfg = NVIDIA Debug|x64
+		{DDC30A80-32A2-4BDD-9FFE-19AADBF82FE1}.NVIDIA|x64.Build.0 = NVIDIA Debug|x64
+		{DDC30A80-32A2-4BDD-9FFE-19AADBF82FE1}.NVIDIA|x86.ActiveCfg = NVIDIA Debug|Win32
+		{DDC30A80-32A2-4BDD-9FFE-19AADBF82FE1}.NVIDIA|x86.Build.0 = NVIDIA Debug|Win32
 		{DDC30A80-32A2-4BDD-9FFE-19AADBF82FE1}.Release|x64.ActiveCfg = Release|x64
 		{DDC30A80-32A2-4BDD-9FFE-19AADBF82FE1}.Release|x64.Build.0 = Release|x64
 		{DDC30A80-32A2-4BDD-9FFE-19AADBF82FE1}.Release|x86.ActiveCfg = Release|Win32

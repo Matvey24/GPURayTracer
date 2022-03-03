@@ -3,5 +3,5 @@
 #define TYPES_H_
 
 #define OBJECT_SPHERE 1
-
+#define OBJECT_RECT 2
 #endif

@@ -10,13 +10,9 @@ double getDist(double t1, double t2){
         return t2;
     return t1;
 }
-double3 reflect(double3 dir, double3 norm){
-    double scl = d3_scl(dir, norm);
-    return dir - (2 * scl) * norm;
-}
-double calcReflect(double3 dir, double3 norm, double ref){
+double calcReflect(double sclDirNorm, double ref){
     ref = 1 - ref;
-    double cosfi = d_module(d3_scl(dir, norm));
+    double cosfi = d_module(sclDirNorm);
     double sinfi = sqrt(1 - cosfi * cosfi);
     double sinpsi = ref * sinfi;
     double cospsi = sqrt(1 - sinpsi * sinpsi);
@@ -24,12 +20,11 @@ double calcReflect(double3 dir, double3 norm, double ref){
     double rpa = (ref*cosfi - cospsi)/(ref*cosfi +cospsi);
     return sqrt((rpe * rpe + rpa * rpa) / 2);
 }
-double nasphInter(double3 center, double rad2,
+double nasphInter(double rad2,
  double3 pos, double3 dir){
-	double3 tmp = center - pos;
 	double k1 = d3_len2(dir);
-	double k2 = d3_scl(tmp, dir);
-    double k3 = d3_len2(tmp) - rad2;
+	double k2 = d3_scl(pos, dir);
+    double k3 = d3_len2(pos) - rad2;
     double disk = k2 * k2 - k1 * k3;
     if (disk < 0)
         return NAN;
@@ -46,16 +41,28 @@ double nasphInter(double3 center, double rad2,
             (k2 - disk) / k1);
     }
 }
-double nahalvInter(double3 center, struct Matrix rot,
-double3 pos, double3 dir){
-	double3 p = Matrix_transform(rot, center - pos);
-	double3 d = Matrix_transform(rot, dir);
-	if (d.x == 0) {
-		if (p.x < 0)
-			return INFINITY;
-		return NAN;
-	}
-	double t1 = p.x / d.x;
-	double t2 = INFINITY * d.x;
-	return getDist(t1, t2);
+double naRectInter(double3 bd, double3 p, double3 d){
+    if ((d.x == 0 && d_module(p.x) > bd.x)
+        || (d.y == 0 && d_module(p.y) > bd.y)
+        || (d.z == 0 && d_module(p.z) > bd.z))
+        return NAN;
+    //p = -p;
+    double s1, s2, s3, e1, e2, e3;
+    double t1 = (p.x + bd.x) / d.x;
+    double t2 = (p.x - bd.x) / d.x;
+    s1 = min(t1, t2);
+    e1 = max(t1, t2);
+    t1 = (p.y + bd.y) / d.y;
+    t2 = (p.y - bd.y) / d.y;
+    s2 = min(t1, t2);
+    e2 = max(t1, t2);
+    t1 = (p.z + bd.z) / d.z;
+    t2 = (p.z - bd.z) / d.z;
+    s3 = min(t1, t2);
+    e3 = max(t1, t2);
+    t1 = max(max(s1, s2), s3);
+    t2 = min(min(e1, e2), e3);
+    if (t1 > t2 || t2 < 0)
+        return NAN;
+    return t1;
 }

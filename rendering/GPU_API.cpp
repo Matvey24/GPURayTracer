@@ -47,7 +47,9 @@ int GPU_API::init(const char** file_names, size_t file_count, const char* func_n
 		error = "Couldn't create context";
 		return 1;
 	}
-	queue = clCreateCommandQueueWithProperties(context, dev_id, NULL, &ret);
+
+//	queue = clCreateCommandQueueWithProperties(context, dev_id, NULL, &ret);
+	queue = clCreateCommandQueue(context, dev_id, 0, &ret);
 	if (ret != 0) {
 		error = "Couldn't create command queue";
 		return 1;
@@ -91,16 +93,24 @@ int GPU_API::init(const char** file_names, size_t file_count, const char* func_n
 	}
 	return 0;
 }
-void GPU_API::print_info() {
+void GPU_API::print_device_info() {
 	const cl_device_info id[] = {
 		CL_DEVICE_MAX_CLOCK_FREQUENCY,
 		CL_DEVICE_MAX_COMPUTE_UNITS,
-		CL_DEVICE_MAX_WORK_GROUP_SIZE
+		CL_DEVICE_MAX_WORK_GROUP_SIZE,
+		CL_DEVICE_GLOBAL_MEM_SIZE,
+		CL_DEVICE_GLOBAL_MEM_CACHE_SIZE,
+		CL_DEVICE_GLOBAL_MEM_CACHELINE_SIZE,
+		CL_DEVICE_LOCAL_MEM_SIZE
 	};
 	const char* str[] = {
 		"CLOCK_FREQ",
 		"UNITS",
-		"MAX_WORK_GROOP_SIZE"};
+		"MAX_WORK_GROOP_SIZE",
+		"GLOBAL_MEM_SIZE",
+		"GLOBAL_CACHE_SIZE",
+		"GLOBAL_CACHELINE_SIZE",
+		"LOCAL_MEM_SIZE"};
 	for (int i = 0; i < sizeof(id) / sizeof(int); ++i) {
 		size_t val;
 		unsigned int ret;
@@ -122,6 +132,13 @@ void GPU_API::print_info() {
 		std::cout << "Undefined\n";
 	}else{
 		std::cout << "(" << dims[0] << ", " << dims[1] << ", " << dims[2] << ")\n";
+	}
+}
+void GPU_API::print_kernel_info() {
+	size_t num, ret, size;
+	ret = clGetKernelWorkGroupInfo(kernel, dev_id, CL_KERNEL_PRIVATE_MEM_SIZE, 8, &num, &size);
+	if (ret == 0) {
+		std::cout << "PRIVATE_MEM_SIZE: " << num << "\n";
 	}
 }
 cl_mem GPU_API::createBuffer(cl_mem_flags flags, size_t mem_size, int& ret) {

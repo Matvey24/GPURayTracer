@@ -15,7 +15,7 @@ public:
 	Matrix rot;
 	size_t push_time = 0, rend_time = 0, poll_time = 0;
 	Camera(int width, int height, GPU_API& api);
-	void render(void* scene_cur, size_t scene_len);
+	int render(void* scene_cur, size_t scene_len);
 	
 };
 struct SceneParam {

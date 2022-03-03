@@ -1,7 +1,7 @@
 #include "Camera.h"
 Camera::Camera(int width, int height, GPU_API& api) 
 	:api(api), im(width, height) {}
-void Camera::render(void* scene_cur, size_t scene_len) {
+int Camera::render(void* scene_cur, size_t scene_len) {
     size_t t = clock();
     int ret;
     SceneParam param;
@@ -22,11 +22,16 @@ void Camera::render(void* scene_cur, size_t scene_len) {
     cl_mem scene_mem = api.createBuffer(CL_MEM_READ_ONLY, scene_len, ret);
     api.writeBuffer(scene_mem, scene_cur, scene_len);
     api.setKernelArg(2, sizeof(cl_mem), &scene_mem);
-
+    ret = api.setKernelArg(3, scene_len, NULL);
+    if (ret != 0) {
+        api.error = "Couldn't set local arg";
+        return 1;
+    }
     size_t t2 = clock();
     push_time = t2 - t;
     t = t2;
-    size_t size[] = { im.width, im.height };
+
+    size_t size[] = {im.width, im.height };
     api.execute(2, size);
     t2 = clock();
     rend_time = t2 - t;
@@ -37,4 +42,5 @@ void Camera::render(void* scene_cur, size_t scene_len) {
     api.deleteBuffer(scene_mem);
     t2 = clock();
     poll_time = t2 - t;
+    return 0;
 }

@@ -26,16 +26,18 @@ void default_scene() {
     GPU_API api;
     if (initGPU(api))
         return;
-    api.print_info();
+    api.print_device_info();
+    api.print_kernel_info();
     std::cout << "\n";
     Camera c(1280, 720, api);
+    c.pos.set(0, 1, 0);
     Scene scene;
     //
     Sphere sp;
     sp.dot.pos.set(0, 0, 4);
     sp.dot.color.set(1, 0, 0);
-    sp.rad2 = 1;
     sp.dot.reflect = 0.2;
+    //sp.bd.set(0.5, 0.5, 0.5);
     scene.objs.push_back(&sp);
     //
     Sphere floor;
@@ -45,16 +47,18 @@ void default_scene() {
     floor.dot.reflect = 0.2;
     scene.objs.push_back(&floor);
     //
-    c.rot.setRotY(Vector2(M_PI / 8));
+    c.rot.setRotX(Vector2(M_PI / 8));
 
     size_t scene_size = scene.sizeOf();
     void* mem = malloc(scene_size);
     scene.write(mem);
-    c.render(mem, scene_size);
+    if (c.render(mem, scene_size) != 0) {
+        std::cout << api.error << "\n";
+    }
     std::cout << "buffers prepared in " << c.push_time << " millis\n";
     std::cout << "rendered in " << c.rend_time << " millis\n";
     std::cout << "copied from VRAM in " << c.poll_time << " millis\n";
-    c.im.save("images/img0.bmp");
+    c.im.save("images/img_gpu.bmp");
     free(mem);
 }
 int main(int argc, char** argv)

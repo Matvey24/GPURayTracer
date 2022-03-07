@@ -6,9 +6,8 @@ class Dot
 public:
 	unsigned long type;
 	Vector3 pos;
-	Vector3 color;
-	double reflect;
 	Matrix rot;
+	unsigned long mater;
 	Dot(unsigned long type);
 	size_t sizeOf() const;
 	void write(void* to);

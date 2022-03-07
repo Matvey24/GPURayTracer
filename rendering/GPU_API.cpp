@@ -48,8 +48,8 @@ int GPU_API::init(const char** file_names, size_t file_count, const char* func_n
 		return 1;
 	}
 
-//	queue = clCreateCommandQueueWithProperties(context, dev_id, NULL, &ret);
-	queue = clCreateCommandQueue(context, dev_id, 0, &ret);
+	queue = clCreateCommandQueueWithProperties(context, dev_id, NULL, &ret);
+	//queue = clCreateCommandQueue(context, dev_id, 0, &ret);
 	if (ret != 0) {
 		error = "Couldn't create command queue";
 		return 1;
@@ -126,6 +126,7 @@ void GPU_API::print_device_info() {
 	size_t dims[3];
 	size_t val_len;
 	unsigned ret;
+	cl_int count;
 	ret = clGetDeviceInfo(dev_id, CL_DEVICE_MAX_WORK_ITEM_SIZES, sizeof(dims), dims, &val_len);
 	std::cout << "MAX_WORK_ITEM_SIZES: ";
 	if (ret != 0) {
@@ -133,6 +134,12 @@ void GPU_API::print_device_info() {
 	}else{
 		std::cout << "(" << dims[0] << ", " << dims[1] << ", " << dims[2] << ")\n";
 	}
+	ret = clGetDeviceInfo(dev_id, CL_DEVICE_PREFERRED_VECTOR_WIDTH_DOUBLE, 4, &count, &val_len);
+	std::cout << "VECTOR_WIDTH_DOUBLE: ";
+	if (ret != 0)
+		std::cout << "Undefined\n";
+	else 
+		std::cout << count << "\n";
 }
 void GPU_API::print_kernel_info() {
 	size_t num, ret, size;

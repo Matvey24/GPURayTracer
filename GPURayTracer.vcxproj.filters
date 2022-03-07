@@ -66,6 +66,12 @@
     <ClCompile Include="objects\Rect.cpp">
       <Filter>Исходные файлы\objects</Filter>
     </ClCompile>
+    <ClCompile Include="objects\MandelBulb.cpp">
+      <Filter>Исходные файлы\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="objects\Material.cpp">
+      <Filter>Исходные файлы\objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rendering\GPU_API.h">
@@ -108,6 +114,9 @@
       <Filter>Файлы заголовков\objects</Filter>
     </ClInclude>
     <ClInclude Include="objects\Rect.h">
+      <Filter>Файлы заголовков\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="objects\MandelBulb.h">
       <Filter>Файлы заголовков\objects</Filter>
     </ClInclude>
   </ItemGroup>

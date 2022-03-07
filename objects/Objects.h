@@ -4,4 +4,5 @@
 
 #include "Sphere.h"
 #include "Rect.h"
+#include "MandelBulb.h"
 #endif

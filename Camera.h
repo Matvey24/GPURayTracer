@@ -7,9 +7,8 @@
 #include "objects/math/Matrix.h"
 class Camera
 {
-private:
-	GPU_API& api;
 public:
+	GPU_API& api;
 	ImageBMP im;
 	Vector3 pos;
 	Matrix rot;

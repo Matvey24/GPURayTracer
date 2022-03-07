@@ -1,12 +1,11 @@
 #pragma once
 #include "Dot.h"
 #include "Writable.h"
-class Rect : public Writable {
+class MandelBulb : public Writable {
 public:
-	Rect();
-	Rect(double x, double y, double z, double w, double h, double d);
+	MandelBulb();
 	Dot dot;
-	Vector3 bd;
+	double size;
 	size_t sizeOf() const;
 	void write(void* to);
 };

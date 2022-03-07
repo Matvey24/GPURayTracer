@@ -1,5 +1,8 @@
 #include "Rect.h"
 Rect::Rect() :dot(OBJECT_RECT), bd(1, 1, 1) {}
+Rect::Rect(double x, double y, double z, double w, double h, double d) : dot(OBJECT_RECT_NOROT), bd(w, h, d) {
+	dot.pos.set(x, y, z);
+}
 size_t Rect::sizeOf() const {
 	return dot.sizeOf() + 3 * sizeof(__int64);
 }

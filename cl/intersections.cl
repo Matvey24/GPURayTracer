@@ -1,3 +1,4 @@
+#define DIFF 0.0001
 double getDist(double t1, double t2){
 	if (t1 < 0 && t2 < 0)
         return NAN;
@@ -20,8 +21,7 @@ double calcReflect(double sclDirNorm, double ref){
     double rpa = (ref*cosfi - cospsi)/(ref*cosfi +cospsi);
     return sqrt((rpe * rpe + rpa * rpa) / 2);
 }
-double nasphInter(double rad2,
- double3 pos, double3 dir){
+double nasphInter(double rad2, double3 pos, double3 dir){
 	double k1 = d3_len2(dir);
 	double k2 = d3_scl(pos, dir);
     double k3 = d3_len2(pos) - rad2;
@@ -46,7 +46,6 @@ double naRectInter(double3 bd, double3 p, double3 d){
         || (d.y == 0 && d_module(p.y) > bd.y)
         || (d.z == 0 && d_module(p.z) > bd.z))
         return NAN;
-    //p = -p;
     double s1, s2, s3, e1, e2, e3;
     double t1 = (p.x + bd.x) / d.x;
     double t2 = (p.x - bd.x) / d.x;
@@ -65,4 +64,47 @@ double naRectInter(double3 bd, double3 p, double3 d){
     if (t1 > t2 || t2 < 0)
         return NAN;
     return t1;
+}
+double naMandelBulbDE(double3 pos){
+    double3 rad = pos;
+    double dr = 1;
+    double r = 0;
+    int power = 2;
+    int i = 0;
+    for (; i < 50; ++i) {
+        r = d3_len(rad);
+        if (r > 2)
+            break;
+        double theta = acos(rad.z / r);
+        double phi = atan2(rad.y, rad.x);
+        dr = pow(r, power - 1) * power * dr + 1;
+        double zr = pow(r, power);
+        theta = theta * power;
+        phi = phi * power;
+        rad = (double3)(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
+        rad *= zr;
+        rad += pos;
+    }
+    return 0.5 * log(r) * r / dr;
+}
+double2 naFractalInter(double dist, double3 pos, double3 dir){
+    double d = 20 * DIFF;
+    double max_d = dist;
+    if (d3_len2(pos) >= 4) {
+        d = dist;
+        max_d = 4;
+    }
+    pos += d * dir;
+    double total_dist = 0;
+    size_t steps;
+    for(steps = 0; steps < 500; ++steps){
+        double3 p = pos + total_dist * dir;
+        dist = naMandelBulbDE(p);
+        total_dist += dist;
+        if (dist < DIFF)
+            return (double2)(total_dist + d, steps);
+        if (total_dist > max_d)
+            return (double2)(NAN, 0);
+    }
+    return (double2)(total_dist + d, steps);
 }

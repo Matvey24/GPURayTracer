@@ -213,6 +213,8 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GPURayTracer.cpp" />
     <ClCompile Include="objects\Dot.cpp" />
+    <ClCompile Include="objects\MandelBulb.cpp" />
+    <ClCompile Include="objects\Material.cpp" />
     <ClCompile Include="objects\math\Matrix.cpp" />
     <ClCompile Include="objects\math\Vector2.cpp" />
     <ClCompile Include="objects\math\Vector3.cpp" />
@@ -225,6 +227,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="objects\Dot.h" />
+    <ClInclude Include="objects\MandelBulb.h" />
     <ClInclude Include="objects\Material.h" />
     <ClInclude Include="objects\math\Matrix.h" />
     <ClInclude Include="objects\math\Vector2.h" />

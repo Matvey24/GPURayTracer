@@ -1,7 +1,7 @@
 struct Matrix{
 	double a1, a2, a3, b1, b2, b3, c1, c2, c3;
 };
-double d_module(double a){
+double d_abs(double a){
     if(a < 0)
         return -a;
     return a;
@@ -15,9 +15,7 @@ double d3_scl(double3 a, double3 b){
 double d3_len2(double3 vec){
     return vec.x * vec.x + vec.y * vec.y + vec.z * vec.z;
 }
-double d3_len(double3 vec){
-	return sqrt(d3_len2(vec));
-}
+
 double3 d3_vec(double3 a, double3 b){
     return (double3)(
         a.y * b.z - a.z * b.y,
@@ -73,7 +71,7 @@ struct Matrix Matrix_setRotE(double3 at, double2 ang){
 }
 
 struct Matrix Matrix_setRotOf(double3 ang){
-	double l = d3_len(ang);
+	double l = sqrt(d3_len2(ang));
     double l1 = 1 / l;
     ang.x *= l1;
     ang.y *= l1;

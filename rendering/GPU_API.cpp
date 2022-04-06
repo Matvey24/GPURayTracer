@@ -48,8 +48,8 @@ int GPU_API::init(const char** file_names, size_t file_count, const char* func_n
 		return 1;
 	}
 
-	queue = clCreateCommandQueueWithProperties(context, dev_id, NULL, &ret);
-	//queue = clCreateCommandQueue(context, dev_id, 0, &ret);
+	//queue = clCreateCommandQueueWithProperties(context, dev_id, NULL, &ret);
+	queue = clCreateCommandQueue(context, dev_id, 0, &ret);
 	if (ret != 0) {
 		error = "Couldn't create command queue";
 		return 1;
@@ -79,9 +79,9 @@ int GPU_API::init(const char** file_names, size_t file_count, const char* func_n
 	ret = clBuildProgram(program, 1, &dev_id, "-cl-mad-enable", NULL, NULL);
 	if (ret != 0) {
 		error = "Couldn't build program";
-		char* a = new char[8192];
+		char* a = new char[65536];
 		size_t size;
-		clGetProgramBuildInfo(program, dev_id, CL_PROGRAM_BUILD_LOG, 8192, a, &size);
+		clGetProgramBuildInfo(program, dev_id, CL_PROGRAM_BUILD_LOG, 65536, a, &size);
 		std::cout << a << "\n";
 		delete[] a;
 		return 1;

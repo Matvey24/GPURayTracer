@@ -31,23 +31,14 @@ double3 DotGetPos(__local long* dat){
 }
 struct Matrix DotGetRot(__local long* dat){
 	struct Matrix m;
-	double8 v = *(__local double8*)&dat[4];
-	m.a1 = v.s0;
-	m.a2 = v.s1;
-	m.a3 = v.s2;
-	m.b1 = v.s3;
-	m.b2 = v.s4;
-	m.b3 = v.s5;
-	m.c1 = v.s6;
-	m.c2 = v.s7;
-	// m.a1 = *(__local double*)&dat[4];
-	// m.a2 = *(__local double*)&dat[5];
-	// m.a3 = *(__local double*)&dat[6];
-	// m.b1 = *(__local double*)&dat[7];
-	// m.b2 = *(__local double*)&dat[8];
-	// m.b3 = *(__local double*)&dat[9];
-	// m.c1 = *(__local double*)&dat[10];
-	// m.c2 = *(__local double*)&dat[11];
+	m.a1 = *(__local double*)&dat[4];
+	m.a2 = *(__local double*)&dat[5];
+	m.a3 = *(__local double*)&dat[6];
+	m.b1 = *(__local double*)&dat[7];
+	m.b2 = *(__local double*)&dat[8];
+	m.b3 = *(__local double*)&dat[9];
+	m.c1 = *(__local double*)&dat[10];
+	m.c2 = *(__local double*)&dat[11];
 	m.c3 = *(__local double*)&dat[12];
 	return m;
 }
@@ -166,7 +157,7 @@ struct SurfacePoint intersect(double3 pos, double3 dir, __local long* scene){
 
 	switch(*near.dot){
 	case OBJECT_SPHERE:
-		surf.norm /= d3_len(surf.norm);
+		surf.norm = normalize(surf.norm);
 		break;
 	case OBJECT_RECT:
 		m = DotGetRot(near.dot);
@@ -205,16 +196,16 @@ struct SurfacePoint intersect(double3 pos, double3 dir, __local long* scene){
 		double size = *(__local double*)&near.dot[DOT_FULL];
 		surf.norm /= size;
 		{
-			double xp = naMandelBulbDE(surf.norm + (double3)(diff, 0, 0));
-			double xn = naMandelBulbDE(surf.norm - (double3)(diff, 0, 0));
-			double yp = naMandelBulbDE(surf.norm + (double3)(0, diff, 0));
-			double yn = naMandelBulbDE(surf.norm - (double3)(0, diff, 0));
-			double zp = naMandelBulbDE(surf.norm + (double3)(0, 0, diff));
-			double zn = naMandelBulbDE(surf.norm - (double3)(0, 0, diff));
+			double xp = naMandelBulbDEHalf(surf.norm + (double3)(diff, 0, 0));
+			double xn = naMandelBulbDEHalf(surf.norm - (double3)(diff, 0, 0));
+			double yp = naMandelBulbDEHalf(surf.norm + (double3)(0, diff, 0));
+			double yn = naMandelBulbDEHalf(surf.norm - (double3)(0, diff, 0));
+			double zp = naMandelBulbDEHalf(surf.norm + (double3)(0, 0, diff));
+			double zn = naMandelBulbDEHalf(surf.norm - (double3)(0, 0, diff));
 			surf.norm = (double3)(xp - xn, yp - yn, zp - zn) / (2 * diff);
 		}
 		surf.norm = Matrix_transformBack(m, surf.norm);
-		surf.norm /= d3_len(surf.norm);
+		surf.norm = normalize(surf.norm);
 		break;
 	default:
 		surf.reflects = false;

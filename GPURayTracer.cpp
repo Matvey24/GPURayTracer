@@ -48,30 +48,31 @@ void default_scene() {
     GPU_API api;
     if (init(api))
         return;
-    Camera c(548, 548, api);
+    Camera c(256, 256, api);
     Scene scene;
 
     Material yel(0xffff01, 0.1);
-    Material cyan(0x8181ff, 0.1);
+    Material cyan(0xa1a1ff, 0.1);
     scene.maters.push_back(&yel);
     scene.maters.push_back(&cyan);
 
     // 
     MandelBulb sp;
     sp.dot.pos.set(7, 0, 0);
+    sp.dot.rot.setRotY(M_PI / 3);
     sp.dot.mater = 1;
     sp.size = 1;
     //
     Rect floor;
     floor.dot.pos.set(0, -2.5, 0);
     floor.dot.mater = 0;
-    floor.bd.set(100, 1, 100);
+    floor.bd.set(10, 1, 2);
     scene.objs.push_back(&floor);
     scene.objs.push_back(&sp);
 
     //
     Matrix ma1, ma2;
-    ma1.setRotZ(-M_PI / 7);
+    ma1.setRotZ(-M_PI / 7 - 0.02);
     ma2.setRotY(-0);
     c.rot.setRotY(Vector2(M_PI / 2));
     c.rot = ma2 * ma1 * c.rot;

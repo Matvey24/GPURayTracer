@@ -16,14 +16,11 @@ double3 raytrace(double3 pos, double3 dir,
 			double cosphi = random(rand);
             double sinphi = sqrt(1 - cosphi * cosphi);
             double psi = random(rand) * 2 * M_PI;
-            dir = (double3)(cosphi, sinphi * sin(psi), sinphi * cos(psi));
-            double3 dir2 = d3_vec(surf.norm, (double3)(1, 0, 0));
-            if(d3_len2(dir2) == 0)
-            	dir2 = (double3)(0, 1, 0);
-            else
-            	dir2 /= d3_len(dir2);
-            struct Matrix m = Matrix_setRotE(dir2, (double2)(surf.norm.x, sqrt(1 - surf.norm.x * surf.norm.x)));
-            dir = Matrix_transformBack(m, dir);
+            double cosp;
+            double sinp = sincos(random(rand) * 2 * M_PI, &cosp);
+            dir = (double3)(cosphi, sinphi * sinp, sinphi * cosp);
+            if(d3_scl(dir, surf.norm) < 0)
+            	dir = -dir;
             color = d3_sclv(color, surf.color);
 		}else{//reflect
 			dir = dir - 2 * scl * surf.norm;
@@ -35,14 +32,6 @@ double3 raytrace(double3 pos, double3 dir,
 double3 updateDiffuse(double3 pos, double3 norm,
 	struct RandomState* rand,
 	__local long* scene, int reref, int disc){
-	
-	double3 dir2 = d3_vec(norm, (double3)(1, 0, 0));
-    if(d3_len2(dir2) == 0)
-       	dir2 = (double3)(0, 1, 0);
-    else
-    	dir2 /= d3_len(dir2);
-    
-    struct Matrix m = Matrix_setRotE(dir2, (double2)(norm.x, sqrt(1 - norm.x * norm.x)));
     if(disc == 0)
     	disc = 1;
 	int width = sqrt((float)disc);
@@ -55,8 +44,11 @@ double3 updateDiffuse(double3 pos, double3 norm,
 			double cosphi = (random(rand) + y) / height;
             double sinphi = sqrt(1 - cosphi * cosphi);
             double psi = (random(rand) + x) * 2 * M_PI / width;
-            double3 dir = (double3)(cosphi, sinphi * sin(psi), sinphi * cos(psi));
-            dir = Matrix_transformBack(m, dir);
+            double cosp;
+            double sinp = sincos(psi, &cosp);
+            double3 dir = (double3)(cosphi, sinphi * sinp, sinphi * cosp);
+            if(d3_scl(dir, norm) < 0)
+            	dir = -dir;
             double3 pos2 = pos + DIFF * dir;
             color += scale * raytrace(pos2, dir, rand, scene, reref);
 		}
@@ -70,9 +62,8 @@ double3 getColor(double3 pos, double3 dir,
 	double3 color = (double3)(0, 0, 0);
 	double refl_scale = 1;
 	
-	int disc = 1000;
-	double refl_min = 1. / disc;
-	int reref = 100;
+	double refl_min = 1. / 1000;
+	int reref = 30;
 
 	for(; reref >= 0; reref--){
 		struct SurfacePoint surf = intersect(pos, dir, scene);
@@ -105,7 +96,7 @@ double3 getColorNormal(double3 pos, double3 dir,
 	struct SurfacePoint sp = intersect(pos, dir, scene);
 	if(!sp.reflects)
 		return (double3)(0, 0, 0);
-	return (double3)(d_module(sp.norm.x), d_module(sp.norm.y), d_module(sp.norm.z));
+	return (double3)(d_abs(sp.norm.x), d_abs(sp.norm.y), d_abs(sp.norm.z));
 }
 double3 getSimpleColor(double3 pos, double3 dir, struct RandomState* rand, __local long* scene){
 	double3 color = (double3)(0, 0, 0);
@@ -125,7 +116,7 @@ double3 getSimpleColor(double3 pos, double3 dir, struct RandomState* rand, __loc
 		}
 		double refl = calcReflect(scl, surf.reflect);
 		double3 dir2 = (double3)(-2, 5, 2);
-		dir2 /= d3_len(dir2);
+		dir2 = normalize(dir2);
 		struct SurfacePoint sp = intersect(surf.pos + DIFF * dir2, dir2, scene);
 		
 		if(!sp.reflects){
@@ -179,8 +170,8 @@ __kernel void worker_main(
 	double table_offset = img.width / tan(FOV / 360 * M_PI) / 2;
 	double3 dir = (double3)(x - img.width / 2., y - img.height / 2., table_offset);
 	dir = Matrix_transform(param.rot, dir);
-	dir /= d3_len(dir);
+	dir = normalize(dir);
 
-	double3 rgb = getSimpleColor(param.cam_pos, dir, &rand, &scene_buf[1]);
+	double3 rgb = getColor(param.cam_pos, dir, &rand, &scene_buf[1]);
 	setPixel(img, x, y, rgb);
 }

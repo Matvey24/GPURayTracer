@@ -77,8 +77,8 @@ struct SPoint rectNorotInter(__local long* rect, double3 pos, double3 dir){
 }
 struct SPoint fractInter(__local long* mandelbulb, double3 pos, double3 dir){
 	pos = DotGetPos(mandelbulb) - pos;
-	double size = *(__local double*)&mandelbulb[DOT_FULL];
-	double dist = nasphInter(size * size * 4, pos, dir);
+	//double size = *(__local double*)&mandelbulb[DOT_FULL];
+	double dist = nasphInter(4, pos, dir);
 	if(dist != dist){
 		struct SPoint p;
 		p.d = NAN;
@@ -89,12 +89,12 @@ struct SPoint fractInter(__local long* mandelbulb, double3 pos, double3 dir){
 	pos = Matrix_transform(m, pos);
 	dir = Matrix_transform(m, dir);
 
-	dist /= size;
-	pos /= size;
+	//dist /= size;
+	//pos /= size;
 
 	struct SPoint p;
 	double2 vec = naFractalInter(dist, pos, dir);
-	p.d = size * vec.x;
+	p.d = vec.x;//*size
 	p.dot = mandelbulb;
 	p.info = vec.y;
 	return p;
@@ -137,7 +137,7 @@ struct SurfacePoint intersect(double3 pos, double3 dir, __local long* scene){
 	struct SurfacePoint surf;
 	if(near.d == INFINITY){
 		surf.reflects = false;
-		surf.color = (double3)(0, 0, 0);
+		surf.color = (double3)(1, 1, 1);
 		return surf;
 	}
 	
@@ -162,7 +162,7 @@ struct SurfacePoint intersect(double3 pos, double3 dir, __local long* scene){
 	double3 tmp;
 	surf.pos = pos + (near.d * dir);
 	surf.norm = surf.pos - DotGetPos(near.dot);
-	double diff = DIFF;
+	double diff = 0.001;
 
 	switch(*near.dot){
 	case OBJECT_SPHERE:

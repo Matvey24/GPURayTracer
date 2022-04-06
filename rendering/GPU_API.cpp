@@ -76,7 +76,7 @@ int GPU_API::init(const char** file_names, size_t file_count, const char* func_n
 		error = "Couldn't create program";
 		return 1;
 	}
-	ret = clBuildProgram(program, 1, &dev_id, NULL, NULL, NULL);
+	ret = clBuildProgram(program, 1, &dev_id, "-cl-mad-enable", NULL, NULL);
 	if (ret != 0) {
 		error = "Couldn't build program";
 		char* a = new char[8192];

@@ -70,7 +70,7 @@ double3 getColor(double3 pos, double3 dir,
 	double3 color = (double3)(0, 0, 0);
 	double refl_scale = 1;
 	
-	int disc = 3000;
+	int disc = 1000;
 	double refl_min = 1. / disc;
 	int reref = 100;
 
@@ -111,7 +111,7 @@ double3 getSimpleColor(double3 pos, double3 dir, struct RandomState* rand, __loc
 	double3 color = (double3)(0, 0, 0);
 	double refl_scale = 1;
 	
-	int reref = 10;
+	int reref = 30;
 	double refl_min = 0.001;
 	for(; reref >= 0; reref--){
 		struct SurfacePoint surf = intersect(pos, dir, scene);
@@ -124,14 +124,18 @@ double3 getSimpleColor(double3 pos, double3 dir, struct RandomState* rand, __loc
 			surf.norm = -surf.norm;
 		}
 		double refl = calcReflect(scl, surf.reflect);
-		double3 dir2 = (double3)(1, 1, -1);
+		double3 dir2 = (double3)(-2, 5, 2);
 		dir2 /= d3_len(dir2);
 		struct SurfacePoint sp = intersect(surf.pos + DIFF * dir2, dir2, scene);
+		
 		if(!sp.reflects){
-			double3 diffuse = -scl * (double3)(0.8, 0.8, 0.8);
-			color += (1 - refl) * refl_scale * d3_sclv(surf.color, diffuse);
+			double power = 0.7 * d3_scl(surf.norm, dir2);
+			if(power < 0)
+				power = -power;
+			color += power * (1 - refl) * refl_scale * surf.color;
 		}
-		color += (1 - refl) * refl_scale * d3_sclv(surf.color, (double3)(0.2, 0.2, 0.2));
+
+		color += 0.2 * (1 - refl) * refl_scale * surf.color;
 		
 		refl_scale *= refl;
 		if(refl_scale < refl_min)
@@ -177,6 +181,6 @@ __kernel void worker_main(
 	dir = Matrix_transform(param.rot, dir);
 	dir /= d3_len(dir);
 
-	double3 rgb = getColor(param.cam_pos, dir, &rand, &scene_buf[1]);
+	double3 rgb = getSimpleColor(param.cam_pos, dir, &rand, &scene_buf[1]);
 	setPixel(img, x, y, rgb);
 }

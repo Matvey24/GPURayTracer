@@ -69,26 +69,26 @@ double naMandelBulbDE(double3 pos){
     double3 rad = pos;
     double dr = 1;
     double r = 0;
-    int power = 2;
+    int power = 8;
     int i = 0;
     for (; i < 50; ++i) {
         r = d3_len(rad);
         if (r > 2)
             break;
-        double theta = acos(rad.z / r);
-        double phi = atan2(rad.y, rad.x);
-        dr = pow(r, power - 1) * power * dr + 1;
-        double zr = pow(r, power);
-        theta = theta * power;
-        phi = phi * power;
-        rad = (double3)(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
-        rad *= zr;
+        double p = r * r;
+        p = (p * p) * (p * r);
+        dr = p * power * dr + 1;
+        p *= r;
+        double theta = acos(rad.z / r) * power;
+        double phi = atan2(rad.y, rad.x) * power;
+        double sint = sin(theta) * p;
+        rad = (double3)(sint * cos(phi), sint * sin(phi), cos(theta) * p);
         rad += pos;
     }
     return 0.5 * log(r) * r / dr;
 }
 double2 naFractalInter(double dist, double3 pos, double3 dir){
-    double d = 20 * DIFF;
+    double d = 0.001;
     double max_d = dist;
     if (d3_len2(pos) >= 4) {
         d = dist;
@@ -100,9 +100,9 @@ double2 naFractalInter(double dist, double3 pos, double3 dir){
     for(steps = 0; steps < 500; ++steps){
         double3 p = pos + total_dist * dir;
         dist = naMandelBulbDE(p);
-        total_dist += dist;
         if (dist < DIFF)
             return (double2)(total_dist + d, steps);
+        total_dist += dist;
         if (total_dist > max_d)
             return (double2)(NAN, 0);
     }

@@ -48,35 +48,35 @@ void default_scene() {
     GPU_API api;
     if (init(api))
         return;
-    Camera c(1280, 720, api);
-    c.pos.set(0, 1, 0);
-    c.rot.setRotX(Vector2(M_PI / 10));
+    Camera c(548, 548, api);
     Scene scene;
 
-    Material yel(Vector3(2, 2, 0));
+    Material yel(0xffff01, 0.1);
+    Material cyan(0x8181ff, 0.1);
     scene.maters.push_back(&yel);
-    Material cyan(0x00ffff, 0.2);
     scene.maters.push_back(&cyan);
+
     // 
-    Sphere sp;
-    sp.dot.pos.set(0, 0, 4);
+    MandelBulb sp;
+    sp.dot.pos.set(7, 0, 0);
     sp.dot.mater = 1;
-    sp.rad2 = 0.75;
-    //sp.bd.set(0.5, 0.5, 0.5);
-    Vector3 dir(1, 0, -1);
-    dir.norm();
-    sp.dot.rot.setRotE(dir, Vector2(-7 * M_PI / 24));
+    sp.size = 1;
     //
     Rect floor;
-    floor.dot.pos.set(0, -1.1, 4);
+    floor.dot.pos.set(0, -2.5, 0);
     floor.dot.mater = 0;
-    floor.bd.set(1.5, 0.2, 1.5);
+    floor.bd.set(100, 1, 100);
     scene.objs.push_back(&floor);
     scene.objs.push_back(&sp);
 
     //
-    c.rot.setRotX(Vector2(M_PI / 16));
-
+    Matrix ma1, ma2;
+    ma1.setRotZ(-M_PI / 7);
+    ma2.setRotY(-0);
+    c.rot.setRotY(Vector2(M_PI / 2));
+    c.rot = ma2 * ma1 * c.rot;
+    c.pos.set(5, 1, 0);
+    
     render("images/img_simp.bmp", c, scene);
 }
 void carnellBox() {
@@ -113,6 +113,6 @@ void carnellBox() {
 }
 int main(int argc, char** argv)
 {
-    carnellBox();
+    default_scene();
     return 0;
 }

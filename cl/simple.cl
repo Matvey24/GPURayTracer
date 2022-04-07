@@ -147,16 +147,19 @@ void mem_cpy(__constant long* scene_tmp, __local long* scene_ref){
 }
 __kernel void worker_main(
 	__constant struct SceneParam *param_p,
-	__global char* data,
 	__constant long* scene_val,
-	__local long* scene_buf) {
+	__local long* scene_buf,
+	__global char* data) {
 	int x = get_global_id(0);
 	int y = get_global_id(1);
+	
 
 	if(get_local_id(0) == 0)
 		mem_cpy(scene_val, scene_buf);
 	
 	barrier(CLK_LOCAL_MEM_FENCE);
+	//struct Scene scene;
+	//scene.sc = &scene_buf[1];
 
 	struct SceneParam param = *param_p;
 	struct ImageBMP img = Image_build(param, data);
@@ -166,12 +169,12 @@ __kernel void worker_main(
 	struct RandomState rand;
 	init_taus(&rand, x * param.im_llen + y + 1237521);
 	
-	double FOV = 60;
+	double FOV = 100;
 	double table_offset = img.width / tan(FOV / 360 * M_PI) / 2;
 	double3 dir = (double3)(x - img.width / 2., y - img.height / 2., table_offset);
 	dir = Matrix_transform(param.rot, dir);
 	dir = normalize(dir);
 
-	double3 rgb = getColor(param.cam_pos, dir, &rand, &scene_buf[1]);
+	double3 rgb = getSimpleColor(param.cam_pos, dir, &rand, &scene_buf[1]);
 	setPixel(img, x, y, rgb);
 }

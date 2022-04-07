@@ -19,6 +19,9 @@ struct SurfacePoint{
 	double3 norm;
 	double reflect;
 };
+struct Scene{
+	__local long* sc;
+};
 double3 getVec(__local long* dat){
 	return (double3)(
 		*(__local double*)&dat[0], 

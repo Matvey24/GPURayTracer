@@ -75,13 +75,17 @@ double naMandelBulbDEHalf(double3 pos){
         r = fast_length(rad);
         if (r > 2)
             break;
+        // float p = r * r;
+        // p = (p * p) * (p * r);
+        // dr = p * 8 * dr + 1;
+        // p *= r;
+
+        dr = r * 2 * dr + 1;
         float p = r * r;
-        p = (p * p) * (p * r);
-        dr = p * 8 * dr + 1;
-        p *= r;
 
         float2 angs = (float2)(acos(rad.z / r), atan2(rad.y, rad.x));
-        angs *= 8;
+        // angs *= 8;
+        angs *= 2;
         float2 coss;
         float2 sins = sincos(angs, &coss);
 

@@ -48,18 +48,22 @@ void default_scene() {
     GPU_API api;
     if (init(api))
         return;
-    Camera c(256, 256, api);
+    Camera c(1920, 1080, api);
+
+    //ImageBMP* img = new ImageBMP("textures/meet3.bmp");
+    //c.addImage(img);
+
     Scene scene;
 
     Material yel(0xffff01, 0.1);
-    Material cyan(0xa1a1ff, 0.1);
+    Material cyan(0x1E90FF, 0.1);
     scene.maters.push_back(&yel);
     scene.maters.push_back(&cyan);
 
     // 
     MandelBulb sp;
     sp.dot.pos.set(7, 0, 0);
-    sp.dot.rot.setRotY(M_PI / 3);
+    //sp.dot.rot.setRotY(-M_PI / 3);
     sp.dot.mater = 1;
     sp.size = 1;
     //
@@ -72,13 +76,27 @@ void default_scene() {
 
     //
     Matrix ma1, ma2;
-    ma1.setRotZ(-M_PI / 7 - 0.02);
-    ma2.setRotY(-0);
+    ma1.setRotZ(-M_PI / 7 - 0.1);
     c.rot.setRotY(Vector2(M_PI / 2));
-    c.rot = ma2 * ma1 * c.rot;
+    c.rot = ma1 * c.rot;
     c.pos.set(5, 1, 0);
     
-    render("images/img_simp.bmp", c, scene);
+    int fps = 60;
+    int seconds = 20;
+    int frames = fps * seconds;
+    double dang = M_PI * 2 / frames;
+    ma2.setRotY(dang);
+    for (int i = 0; i < frames; ++i) {
+        char str[256];
+        sprintf_s(str, "D:\\Programms\\video_maker\\images\\img%d.bmp", i);
+        render(str, c, scene);
+        sp.dot.rot = ma2 * sp.dot.rot;
+    }
+
+    //render("images/img_simp.bmp", c, scene);
+    
+    
+    //c.deleteImages();
 }
 void carnellBox() {
     GPU_API api;

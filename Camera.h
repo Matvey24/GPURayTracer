@@ -13,11 +13,11 @@ public:
 	ImageBMP im;
 	Vector3 pos;
 	Matrix rot;
-	std::vector<cl_mem> textures;
+	cl_mem texture;
 	size_t push_time = 0, rend_time = 0, poll_time = 0;
 	Camera(int width, int height, GPU_API& api);
 	int render(void* scene_cur, size_t scene_len);
-	void addImage(const ImageBMP* image);
+	void setImage(const ImageBMP* image);
 	void deleteImages();
 };
 struct SceneParam {

@@ -5,6 +5,7 @@
 #include "Writable.h"
 #define MATERIAL_FILL 0
 #define MATERIAL_LIGHT 1
+#define MATERIAL_TEXTURE 2
 class Material: public Writable {
 public:
 	long type;

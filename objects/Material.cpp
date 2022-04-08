@@ -13,10 +13,11 @@ Material::Material(Vector3 rgb, double refl):type(MATERIAL_FILL), reflect(refl),
 Material::Material(Vector3 rgb):type(MATERIAL_LIGHT), reflect(0), diffuse(rgb) {}
 size_t Material::sizeOf() const {
 	switch (type) {
-	case MATERIAL_FILL:
-		return 8 * (1 + 3 + 1);
 	case MATERIAL_LIGHT:
 		return 8 * (1 + 3);
+	case MATERIAL_FILL:
+	case MATERIAL_TEXTURE:
+		return 8 * (1 + 3 + 1);
 	}
 	return 0;
 }
@@ -27,7 +28,7 @@ void Material::write(void* to) {
 	dp[++i] = diffuse.x;
 	dp[++i] = diffuse.y;
 	dp[++i] = diffuse.z;
-	if (type == MATERIAL_FILL) {
+	if (type == MATERIAL_FILL || type == MATERIAL_TEXTURE) {
 		dp[++i] = reflect;
 	}
 }

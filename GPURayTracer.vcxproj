@@ -222,6 +222,7 @@
     <ClCompile Include="objects\Sphere.cpp" />
     <ClCompile Include="rendering\GPU_API.cpp" />
     <ClCompile Include="rendering\ImageBMP.cpp" />
+    <ClCompile Include="rendering\TimeLine.cpp" />
     <ClCompile Include="Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -239,6 +240,7 @@
     <ClInclude Include="objects\Writable.h" />
     <ClInclude Include="rendering\GPU_API.h" />
     <ClInclude Include="rendering\ImageBMP.h" />
+    <ClInclude Include="rendering\TimeLine.h" />
     <ClInclude Include="Scene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,6 +1,6 @@
 double3 raytrace(double3 pos, double3 dir,
  struct RandomState* rand,
-  __local long* scene, int reref){
+  struct Scene scene, int reref){
 	double3 color = (double3)(1, 1, 1);
 	for(int i = 0; i < reref; ++i){
 		struct SurfacePoint surf = intersect(pos, dir, scene);
@@ -31,7 +31,7 @@ double3 raytrace(double3 pos, double3 dir,
 }
 double3 updateDiffuse(double3 pos, double3 norm,
 	struct RandomState* rand,
-	__local long* scene, int reref, int disc){
+	struct Scene scene, int reref, int disc){
     if(disc == 0)
     	disc = 1;
 	int width = sqrt((float)disc);
@@ -57,7 +57,7 @@ double3 updateDiffuse(double3 pos, double3 norm,
 }
 double3 getColor(double3 pos, double3 dir,
 	struct RandomState* rand,
-	__local long* scene) {
+	struct Scene scene) {
 	
 	double3 color = (double3)(0, 0, 0);
 	double refl_scale = 1;
@@ -92,13 +92,13 @@ double3 getColor(double3 pos, double3 dir,
 }
 double3 getColorNormal(double3 pos, double3 dir,
 	struct RandomState* rand,
-	__local long* scene){
+	struct Scene scene){
 	struct SurfacePoint sp = intersect(pos, dir, scene);
 	if(!sp.reflects)
 		return (double3)(0, 0, 0);
 	return (double3)(d_abs(sp.norm.x), d_abs(sp.norm.y), d_abs(sp.norm.z));
 }
-double3 getSimpleColor(double3 pos, double3 dir, struct RandomState* rand, __local long* scene){
+double3 getSimpleColor(double3 pos, double3 dir, struct RandomState* rand, struct Scene scene){
 	double3 color = (double3)(0, 0, 0);
 	double refl_scale = 1;
 	
@@ -115,7 +115,7 @@ double3 getSimpleColor(double3 pos, double3 dir, struct RandomState* rand, __loc
 			surf.norm = -surf.norm;
 		}
 		double refl = calcReflect(scl, surf.reflect);
-		double3 dir2 = (double3)(-2, 5, 2);
+		double3 dir2 = (double3)(-2, 5, -2);
 		dir2 = normalize(dir2);
 		struct SurfacePoint sp = intersect(surf.pos + DIFF * dir2, dir2, scene);
 		
@@ -149,7 +149,8 @@ __kernel void worker_main(
 	__constant struct SceneParam *param_p,
 	__constant long* scene_val,
 	__local long* scene_buf,
-	__global char* data) {
+	__global char* data,
+	__global char* texture) {
 	int x = get_global_id(0);
 	int y = get_global_id(1);
 	
@@ -158,8 +159,9 @@ __kernel void worker_main(
 		mem_cpy(scene_val, scene_buf);
 	
 	barrier(CLK_LOCAL_MEM_FENCE);
-	//struct Scene scene;
-	//scene.sc = &scene_buf[1];
+	struct Scene scene;
+	scene.sc = &scene_buf[1];
+	scene.texture = ImageFromBMP(texture);
 
 	struct SceneParam param = *param_p;
 	struct ImageBMP img = Image_build(param, data);
@@ -169,12 +171,11 @@ __kernel void worker_main(
 	struct RandomState rand;
 	init_taus(&rand, x * param.im_llen + y + 1237521);
 	
-	double FOV = 100;
+	double FOV = 60;
 	double table_offset = img.width / tan(FOV / 360 * M_PI) / 2;
 	double3 dir = (double3)(x - img.width / 2., y - img.height / 2., table_offset);
 	dir = Matrix_transform(param.rot, dir);
 	dir = normalize(dir);
-
-	double3 rgb = getSimpleColor(param.cam_pos, dir, &rand, &scene_buf[1]);
+	double3 rgb = getSimpleColor(param.cam_pos, dir, &rand, scene);
 	setPixel(img, x, y, rgb);
 }

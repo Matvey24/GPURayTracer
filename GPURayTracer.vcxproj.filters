@@ -72,6 +72,9 @@
     <ClCompile Include="objects\Material.cpp">
       <Filter>Исходные файлы\objects</Filter>
     </ClCompile>
+    <ClCompile Include="rendering\TimeLine.cpp">
+      <Filter>Исходные файлы\rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rendering\GPU_API.h">
@@ -118,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="objects\MandelBulb.h">
       <Filter>Файлы заголовков\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="rendering\TimeLine.h">
+      <Filter>Файлы заголовков\rendering</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

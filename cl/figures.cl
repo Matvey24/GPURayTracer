@@ -5,6 +5,7 @@
 
 #define MATERIAL_FILL 0
 #define MATERIAL_LIGHT 1
+#define MATERIAL_TEXTURE 2
 #define DOT_FULL 14
 
 struct SPoint{
@@ -21,6 +22,7 @@ struct SurfacePoint{
 };
 struct Scene{
 	__local long* sc;
+	struct ImageBMP texture;
 };
 double3 getVec(__local long* dat){
 	return (double3)(
@@ -94,30 +96,30 @@ struct SPoint fractInter(__local long* mandelbulb, double3 pos, double3 dir){
 	return p;
 }
 
-struct SurfacePoint intersect(double3 pos, double3 dir, __local long* scene){
+struct SurfacePoint intersect(double3 pos, double3 dir, struct Scene scene){
 	long p = 0;
-	long count = scene[p];
+	long count = scene.sc[p];
 	p++;
 	struct SPoint near;
 	struct SPoint cur;
 	near.d = INFINITY;
 
 	for(long i = 0; i < count; ++i){
-		switch(scene[p]){
+		switch(scene.sc[p]){
 		case OBJECT_SPHERE:
-			cur = sphInter(&scene[p], pos, dir);
+			cur = sphInter(&scene.sc[p], pos, dir);
 			p += DOT_FULL + 1;
 			break;
 		case OBJECT_RECT:
-			cur = rectInter(&scene[p], pos, dir);
+			cur = rectInter(&scene.sc[p], pos, dir);
 			p += DOT_FULL + 3;
 			break;
 		case OBJECT_RECT_NOROT:
-			cur = rectNorotInter(&scene[p], pos, dir);
+			cur = rectNorotInter(&scene.sc[p], pos, dir);
 			p += DOT_FULL + 3;
 			break;
 		case OBJECT_FRACTAL:
-			cur = fractInter(&scene[p], pos, dir);
+			cur = fractInter(&scene.sc[p], pos, dir);
 			p += DOT_FULL + 1;
 			break;
 		default:
@@ -136,23 +138,34 @@ struct SurfacePoint intersect(double3 pos, double3 dir, __local long* scene){
 	}
 	
 	long mater_d = near.dot[13];
-	surf.color = getVec(&scene[mater_d + 1]);
+	struct Matrix m;
 
-	switch(scene[mater_d]){
+	switch(scene.sc[mater_d]){
 	case MATERIAL_FILL:
+		surf.color = getVec(&scene.sc[mater_d + 1]);
 		surf.reflects = true;
-		surf.reflect = *(__local double*)&scene[mater_d + 4];
+		surf.reflect = *(__local double*)&scene.sc[mater_d + 4];
 		break;
 	case MATERIAL_LIGHT:
+		surf.color = getVec(&scene.sc[mater_d + 1]);
 		surf.reflects = false;
 		return surf;
+	case MATERIAL_TEXTURE:{
+		double3 cur_pos = pos + (near.d * dir);
+		cur_pos = cur_pos - DotGetPos(near.dot);
+		m = DotGetRot(near.dot);
+		cur_pos = Matrix_transform(m, cur_pos);
+		surf.color = getPixel(scene.texture, (cur_pos.x - cur_pos.z) / 2, cur_pos.y);
+		surf.reflects = true;
+		surf.reflect = *(__local double*)&scene.sc[mater_d + 4];
+		break;
+	}
 	default:
 		surf.reflects = false;
 		surf.color = (double3)(1, 0, 1);
 		return surf;
 	}
 
-	struct Matrix m;
 	double3 tmp;
 	surf.pos = pos + (near.d * dir);
 	surf.norm = surf.pos - DotGetPos(near.dot);

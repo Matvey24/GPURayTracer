@@ -1,8 +1,7 @@
 #include "Camera.h"
 Camera::Camera(int width, int height, GPU_API& api) 
 	:api(api), im(width, height) {
-    cl_mem mem;
-    textures.push_back(mem);
+    texture =  NULL;
 }
 
 int Camera::render(void* scene_cur, size_t scene_len) {
@@ -28,10 +27,7 @@ int Camera::render(void* scene_cur, size_t scene_len) {
 
     cl_mem img_mem = api.createBuffer(CL_MEM_READ_WRITE, im.full_len - im.start, ret);
     api.setKernelArg(3, sizeof(cl_mem), &img_mem);
-    //cl_mem text_mem = api.createBuffer(CL_MEM_READ_ONLY, textures.size() * sizeof(cl_mem), ret);
-    //api.setKernelArg(3, sizeof(cl_mem), &text_mem);
-    //textures[0] = img_mem;
-    //api.writeBuffer(text_mem, textures.data(), textures.size() * sizeof(cl_mem));
+    api.setKernelArg(4, sizeof(cl_mem), &texture);
 
 
     if (ret != 0) {
@@ -55,15 +51,16 @@ int Camera::render(void* scene_cur, size_t scene_len) {
     poll_time = t2 - t;
     return 0;
 }
-void Camera::addImage(const ImageBMP* image) {
+void Camera::setImage(const ImageBMP* image) {
+    if (texture != NULL)
+        deleteImages();
     int ret;
-    size_t size = image->full_len - image->start;
-    cl_mem img_mem = api.createBuffer(CL_MEM_READ_ONLY, size, ret);
-    api.writeBuffer(img_mem, image->getImageBuf(), size);
-    textures.push_back(img_mem);
+    texture = api.createBuffer(CL_MEM_READ_ONLY, image->full_len, ret);
+    api.writeBuffer(texture, image->buf, image->full_len);
 }
 void Camera::deleteImages() {
-    for (int i = 1; i < textures.size(); ++i) {
-        api.deleteBuffer(textures[i]);
+    if (texture != NULL) {
+        api.deleteBuffer(texture);
+        texture = NULL;
     }
 }
